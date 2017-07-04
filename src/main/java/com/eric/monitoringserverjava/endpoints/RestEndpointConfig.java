@@ -1,8 +1,11 @@
 package com.eric.monitoringserverjava.endpoints;
 
+import org.springframework.data.mongodb.core.mapping.Document;
+
 /**
  *
  */
+@Document
 public class RestEndpointConfig extends EndpointConfig {
 	private String host;
 	private int port;

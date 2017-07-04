@@ -1,11 +1,13 @@
 package com.eric.monitoringserverjava.rules;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  *
  */
+@Document
 public class RestRule extends HttpRule {
 	private RequestMethod requestMethod;
 

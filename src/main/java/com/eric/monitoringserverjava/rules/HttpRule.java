@@ -1,10 +1,12 @@
 package com.eric.monitoringserverjava.rules;
 
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.http.HttpStatus;
 
 /**
  *
  */
+@Document
 public class HttpRule extends Rule {
 	private HttpStatus expectedHttpStatus;
 	private String expectedResponseBody;

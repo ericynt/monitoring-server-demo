@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.admin;
+package com.eric.monitoringserverjava.security;
 
 import org.springframework.web.bind.annotation.RestController;
 

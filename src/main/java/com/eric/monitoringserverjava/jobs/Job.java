@@ -1,9 +1,10 @@
 package com.eric.monitoringserverjava.jobs;
 
-import com.eric.monitoringserverjava.admin.User;
+import com.eric.monitoringserverjava.security.User;
 import com.eric.monitoringserverjava.endpoints.EndpointConfig;
 import com.eric.monitoringserverjava.rules.Rule;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 /**
  *
  */
+@Document
 public class Job {
 	@Id
 	private String id;

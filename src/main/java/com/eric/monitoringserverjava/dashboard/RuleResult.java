@@ -1,12 +1,14 @@
 package com.eric.monitoringserverjava.dashboard;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 /**
  *
  */
+@Document
 public class RuleResult {
 	@Id
 	private String id;
