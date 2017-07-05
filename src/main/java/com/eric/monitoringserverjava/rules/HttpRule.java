@@ -15,8 +15,8 @@ public class HttpRule extends Rule {
 		super();
 	}
 
-	public HttpRule (String name, int timeoutSeconds, HttpStatus expectedHttpStatus, String expectedResponseBody) {
-		super(name, timeoutSeconds);
+	public HttpRule (String id, String name, int timeoutSeconds, HttpStatus expectedHttpStatus, String expectedResponseBody) {
+		super(id, name, timeoutSeconds);
 		this.expectedHttpStatus = expectedHttpStatus;
 		this.expectedResponseBody = expectedResponseBody;
 	}

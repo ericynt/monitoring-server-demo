@@ -14,8 +14,12 @@ public class RestRule extends HttpRule {
 	public RestRule () {
 	}
 
-	public RestRule (String name, int timeoutSeconds, HttpStatus expectedHttpStatus, String expectedResponseBody, RequestMethod requestMethod) {
-		super(name, timeoutSeconds, expectedHttpStatus, expectedResponseBody);
+	public RestRule (RequestMethod requestMethod) {
+		this.requestMethod = requestMethod;
+	}
+
+	public RestRule (String id, String name, int timeoutSeconds, HttpStatus expectedHttpStatus, String expectedResponseBody, RequestMethod requestMethod) {
+		super(id, name, timeoutSeconds, expectedHttpStatus, expectedResponseBody);
 		this.requestMethod = requestMethod;
 	}
 

@@ -14,7 +14,8 @@ public abstract class Rule {
 	public Rule () {
 	}
 
-	public Rule (String name, int timeoutSeconds) {
+	public Rule (String id, String name, int timeoutSeconds) {
+		this.id = id;
 		this.name = name;
 		this.timeoutSeconds = timeoutSeconds;
 	}
