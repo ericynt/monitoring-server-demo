@@ -15,6 +15,7 @@ public abstract class EndpointConfig {
 	private Protocol protocol;
 
 	public enum EndpointType {REST}
+
 	public enum Protocol {HTTP, HTTPS}
 
 	EndpointConfig () {
@@ -27,7 +28,7 @@ public abstract class EndpointConfig {
 		this.protocol = protocol;
 	}
 
-	public abstract URL getUrl();
+	public abstract URL getUrl ();
 
 	public String getId () {
 		return id;

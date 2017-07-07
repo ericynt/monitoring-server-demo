@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.security;
+package com.eric.monitoringserverjava.users;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 
@@ -6,5 +6,4 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
  *
  */
 public interface UserRepository extends ReactiveCrudRepository<User, String> {
-
 }

@@ -1,6 +1,6 @@
 package com.eric.monitoringserverjava.jobs;
 
-import com.eric.monitoringserverjava.security.User;
+import com.eric.monitoringserverjava.users.User;
 import com.eric.monitoringserverjava.endpoints.EndpointConfig;
 import com.eric.monitoringserverjava.rules.Rule;
 import org.springframework.data.annotation.Id;

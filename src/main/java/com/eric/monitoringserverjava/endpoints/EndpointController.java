@@ -4,6 +4,7 @@ import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,16 +25,19 @@ public class EndpointController {
 		this.endpointService = endpointService;
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.GET)
 	Flux<EndpointConfig> getAllEndpointConfigs () {
 		return endpointService.getAllEndpointConfigs();
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
 	@RequestMapping(value = "endpoint-configs/{id}", method = RequestMethod.GET)
 	Mono<EndpointConfig> getEndpointConfigById (@PathVariable Publisher<String> id) {
 		return endpointService.getEndpointConfigById(id);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.POST)
 	Mono<ResponseEntity<EndpointConfig>> createEndpointConfig (EndpointConfig endpointConfig) {
 		return endpointService.createEndpointConfig(endpointConfig).map(
@@ -41,6 +45,7 @@ public class EndpointController {
 		);
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.PUT)
 	Mono<ResponseEntity> updateEndpointConfig (EndpointConfig endpointConfig) {
 		return endpointService.updateEndpointConfig(endpointConfig).map(
@@ -48,6 +53,7 @@ public class EndpointController {
 		).defaultIfEmpty(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
 	}
 
+	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.DELETE)
 	Mono<Void> deleteEndpointConfig (EndpointConfig endpointConfig) {
 		return endpointService.deleteEndpointConfig(endpointConfig);

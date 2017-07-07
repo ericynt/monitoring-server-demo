@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.security;
+package com.eric.monitoringserverjava.users;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +26,12 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Mono<User> getUserById (Publisher<String> id) {
 		return repository.findById(id);
+	}
+
+	@Override
+	public User getUserByName (String name) {
+		// TODO fix me
+		return repository.findAll().filter(retrievedName -> retrievedName.getName().equals(name)).blockFirst();
 	}
 
 	@Override

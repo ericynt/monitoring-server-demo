@@ -1,8 +1,9 @@
-package com.eric.monitoringserverjava.security;
+package com.eric.monitoringserverjava.users;
 
 import org.reactivestreams.Publisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,23 +23,27 @@ public class UserController {
 		this.userService = userService;
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "users/", method = RequestMethod.GET)
 	Flux<User> getUsers () {
 		return userService.getUsers();
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "users/{id}", method = RequestMethod.GET)
 	Mono<User> getUserById (@PathVariable Publisher<String> id) {
 		return userService.getUserById(id);
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "users/", method = RequestMethod.POST)
 	Mono<ResponseEntity<User>> createUser (User user) {
 		return userService.createUser(user).map(
 		  createdUser -> new ResponseEntity<>(createdUser, HttpStatus.CREATED)
-		);
+		).defaultIfEmpty(ResponseEntity.noContent().build());
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "users/", method = RequestMethod.PUT)
 	Mono<ResponseEntity<User>> updateUser (User user) {
 		return userService.updateUser(user).map(
@@ -46,6 +51,7 @@ public class UserController {
 		).defaultIfEmpty(ResponseEntity.noContent().build());
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@RequestMapping(value = "users/", method = RequestMethod.DELETE)
 	Mono<Void> deleteUser (User user) {
 		return userService.deleteUser(user);

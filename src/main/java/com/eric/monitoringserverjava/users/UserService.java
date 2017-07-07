@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.security;
+package com.eric.monitoringserverjava.users;
 
 import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
@@ -11,6 +11,8 @@ public interface UserService {
 	Flux<User> getUsers ();
 
 	Mono<User> getUserById (Publisher<String> id);
+
+	User getUserByName (String name);
 
 	Mono<User> createUser (User user);
 
