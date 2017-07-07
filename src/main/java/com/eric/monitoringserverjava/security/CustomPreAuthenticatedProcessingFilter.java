@@ -3,6 +3,8 @@ package com.eric.monitoringserverjava.security;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.eric.monitoringserverjava.users.User;
 import com.eric.monitoringserverjava.users.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -19,6 +21,8 @@ import static com.eric.monitoringserverjava.utils.JWTTokenUtil.verifyJWTToken;
  *
  */
 public class CustomPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
+	private static Logger LOGGER = LoggerFactory.getLogger(CustomPreAuthenticatedProcessingFilter.class);
+
 	private UserService userService;
 
 	private static final String AUTHORIZATION = "Authorization";
@@ -40,23 +44,42 @@ public class CustomPreAuthenticatedProcessingFilter extends AbstractPreAuthentic
 
 				if (parts.length > 1) {
 					String token = String.join("", Arrays.copyOfRange(parts, 1, parts.length));
-					String userName =  getUserNameFromToken(token, tokenSecret);
+					String userName = getUserNameFromToken(token, tokenSecret);
 					User user = userService.getUserByName(userName);
+
+					if (LOGGER.isDebugEnabled()) {
+						LOGGER.debug("Retrieved username {} from token {}.", userName, token);
+						LOGGER.debug("Retrieved user {} from db by username {}.", user, userName);
+					}
 
 					try {
 						verifyJWTToken(tokenSecret, user, token);
 					} catch (UnsupportedEncodingException | JWTVerificationException e) {
-						e.printStackTrace();
+						if (LOGGER.isErrorEnabled()) {
+							LOGGER.error("Something went wrong while verifying token {} with user {}.", token, user);
+						}
 
 						return null;
 					}
 
-					return  userName;
+					return userName;
 				} else {
+					if (LOGGER.isErrorEnabled()) {
+						LOGGER.error("Something seems to be wrong with the provided token header {}.", header);
+					}
+
 					return null;
 				}
 			}
-		  ).orElse(null);
+		  ).orElseGet(
+			() -> {
+				if (LOGGER.isErrorEnabled()) {
+					LOGGER.error("No token provided.");
+				}
+
+				return null;
+			}
+		  );
 	}
 
 	@Override

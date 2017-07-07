@@ -1,6 +1,8 @@
 package com.eric.monitoringserverjava.security;
 
 import com.eric.monitoringserverjava.users.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -20,7 +22,9 @@ import static com.eric.monitoringserverjava.utils.JWTTokenUtil.getRoleStrings;
  *
  */
 public class CustomAuthenticationUserDetailsService implements AuthenticationUserDetailsService {
-	UserService userService;
+	Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationUserDetailsService.class);
+
+	private UserService userService;
 
 	@Value("${jwt.token.secret}")
 	String tokenSecret;
@@ -36,11 +40,20 @@ public class CustomAuthenticationUserDetailsService implements AuthenticationUse
 		com.eric.monitoringserverjava.users.User retrievedUser = userService.getUserByName(principal.toString());
 
 		if (retrievedUser == null) {
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error("No corresponding user found in db for principal {}.", principal.toString());
+			}
+
 			throw new UsernameNotFoundException("User not found.");
 		}
 
+		String[] roleStrings = getRoleStrings(retrievedUser);
 		List<GrantedAuthority> grantedAuthorities = new SimpleAttributes2GrantedAuthoritiesMapper()
-		  .getGrantedAuthorities(Arrays.asList(getRoleStrings(retrievedUser)));
+		  .getGrantedAuthorities(Arrays.asList(roleStrings));
+
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Adding roles {} to user details.", roleStrings);
+		}
 
 		return new User(principal.toString(), "", grantedAuthorities);
 	}

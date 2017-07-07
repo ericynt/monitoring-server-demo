@@ -5,6 +5,8 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.eric.monitoringserverjava.users.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.UnsupportedEncodingException;
 import java.time.LocalDateTime;
@@ -16,8 +18,10 @@ import static com.eric.monitoringserverjava.utils.DateUtil.toDate;
  *
  */
 public class JWTTokenUtil {
-	public static final String ROLES = "roles";
-	public static final String GUEST = "GUEST";
+	private static Logger LOGGER = LoggerFactory.getLogger(JWTTokenUtil.class);
+
+	private static final String ROLES = "roles";
+	private static final String GUEST = "GUEST";
 
 	public static String createToken (User user, String tokenSecret) {
 		String token = null;
@@ -30,8 +34,14 @@ public class JWTTokenUtil {
 			  .sign(
 				Algorithm.HMAC512(tokenSecret)
 			  );
+
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Created token {} for user {}", user, token);
+			}
 		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+			if (LOGGER.isErrorEnabled()) {
+				LOGGER.error("UnsupportedEncoding used while trying to create token for user {}", user);
+			}
 		}
 
 		return token;
@@ -42,6 +52,10 @@ public class JWTTokenUtil {
 		JWTVerifier jwtVerifier;
 
 		if (roleStrings.length == 1 && roleStrings[0].equals(GUEST)) {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Verifying token {}, for user {}, with {} role.", token, user, GUEST);
+			}
+
 			jwtVerifier = JWT
 			  .require(Algorithm.HMAC512(tokenSecret))
 			  .withSubject(user.getName())
@@ -49,6 +63,10 @@ public class JWTTokenUtil {
 			  .acceptExpiresAt(60 * 60 * 22)
 			  .build();
 		} else {
+			if (LOGGER.isDebugEnabled()) {
+				LOGGER.debug("Verifying token {} for user {}", token, user);
+			}
+
 			jwtVerifier = JWT
 			  .require(Algorithm.HMAC512(tokenSecret))
 			  .withSubject(user.getName())
@@ -60,16 +78,20 @@ public class JWTTokenUtil {
 	}
 
 	public static String getUserNameFromToken (String token, String tokenSecret) {
-		String user = null;
+		String userName = null;
 
 		try {
 			DecodedJWT decodedJWT = getDecodedJWT(token, tokenSecret);
-			user = decodedJWT.getSubject();
+			userName = decodedJWT.getSubject();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
 
-		return user;
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Retrieved username {} from token {}", userName, token);
+		}
+
+		return userName;
 	}
 
 	public static String[] getRoleStrings (com.eric.monitoringserverjava.users.User retrievedUser) {
@@ -77,38 +99,6 @@ public class JWTTokenUtil {
 		  com.eric.monitoringserverjava.users.User.Role::toString
 		).toArray(String[]::new);
 	}
-
-/*	public static String[] getRolesFromToken (String token, String tokenSecret) {
-		String[] roles = null;
-
-		try {
-			DecodedJWT decodedJWT = getDecodedJWT(token, tokenSecret);
-			roles = decodedJWT.getClaim(ROLES).asArray(String.class);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		return roles;
-	}*/
-
-/*	public static boolean isExpired (String token, String tokenSecret) {
-		DecodedJWT decodedJWT;
-		Date expiresAt = null;
-
-		try {
-			decodedJWT = getDecodedJWT(token, tokenSecret);
-			expiresAt = decodedJWT.getExpiresAt();
-
-			if (expiresAt == null) {
-				return true;
-			}
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		return toLocalDateTime(expiresAt).isBefore(LocalDateTime.now());
-	}*/
 
 	private static DecodedJWT getDecodedJWT (String token, String tokenSecret) throws UnsupportedEncodingException {
 		return JWT.decode(token);
