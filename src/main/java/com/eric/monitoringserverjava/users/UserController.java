@@ -11,7 +11,7 @@ import reactor.core.publisher.Mono;
 /**
  *
  */
-@RequestMapping("api/")
+@RequestMapping("api/users/")
 @RestController
 public class UserController {
 	private UserService userService;
@@ -21,19 +21,19 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "users/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	Flux<User> getUsers () {
 		return userService.getUsers();
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "users/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	Mono<User> getUserById (@PathVariable Publisher<String> id) {
 		return userService.getUserById(id);
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "users/", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	Mono<ResponseEntity<User>> createUser (@RequestBody User user) {
 		return userService.createUser(user).map(
 		  createdUser -> new ResponseEntity<>(createdUser, HttpStatus.CREATED)
@@ -41,7 +41,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "users/", method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT)
 	Mono<ResponseEntity<User>> updateUser (@RequestBody User user) {
 		return userService.updateUser(user).map(
 		  createdUser -> new ResponseEntity<>(createdUser, HttpStatus.OK)
@@ -49,7 +49,7 @@ public class UserController {
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@RequestMapping(value = "users/", method = RequestMethod.DELETE)
+	@RequestMapping(method = RequestMethod.DELETE)
 	Mono<Void> deleteUser (@RequestBody User user) {
 		return userService.deleteUser(user);
 	}

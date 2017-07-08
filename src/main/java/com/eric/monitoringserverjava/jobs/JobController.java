@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 /**
  *
  */
-@RequestMapping("api/")
+@RequestMapping("api/jobs/")
 @RestController
 public class JobController {
 	private JobService jobService;
@@ -23,19 +23,19 @@ public class JobController {
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
-	@RequestMapping(value = "jobs/", method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.GET)
 	Flux<Job> getAllJobs () {
 		return jobService.getAllJobs();
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
-	@RequestMapping(value = "jobs/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
 	Mono<Job> getJobById (@PathVariable Publisher<String> id) {
 		return jobService.getJobsById(id);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	@RequestMapping(value = "jobs/", method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST)
 	Mono<ResponseEntity<Job>> createJob (@RequestBody Job job) {
 		return jobService.createJob(job).map(
 		  createdJob -> new ResponseEntity<>(createdJob, HttpStatus.CREATED)
@@ -43,7 +43,7 @@ public class JobController {
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	@RequestMapping(value = "jobs/", method = RequestMethod.PUT)
+	@RequestMapping(method = RequestMethod.PUT)
 	Mono<ResponseEntity> updateJob (@RequestBody Job job) {
 		return jobService.createJob(job).map(
 		  updatedJob -> new ResponseEntity(updatedJob, HttpStatus.OK)

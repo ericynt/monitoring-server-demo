@@ -77,11 +77,11 @@ public class JWTTokenUtil {
 		jwtVerifier.verify(token);
 	}
 
-	public static String getUserNameFromToken (String token, String tokenSecret) {
+	public static String getUserNameFromToken (String token) {
 		String userName = null;
 
 		try {
-			DecodedJWT decodedJWT = getDecodedJWT(token, tokenSecret);
+			DecodedJWT decodedJWT = getDecodedJWT(token);
 			userName = decodedJWT.getSubject();
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -100,7 +100,7 @@ public class JWTTokenUtil {
 		).toArray(String[]::new);
 	}
 
-	private static DecodedJWT getDecodedJWT (String token, String tokenSecret) throws UnsupportedEncodingException {
+	private static DecodedJWT getDecodedJWT (String token) throws UnsupportedEncodingException {
 		return JWT.decode(token);
 	}
 }

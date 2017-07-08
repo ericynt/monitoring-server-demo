@@ -2,7 +2,7 @@ package com.eric.monitoringserverjava.config;
 
 import com.eric.monitoringserverjava.rules.HttpRule;
 import com.eric.monitoringserverjava.rules.RestRule;
-import com.eric.monitoringserverjava.rules.RuleRepository;
+import com.eric.monitoringserverjava.rules.RestRuleRepository;
 import com.eric.monitoringserverjava.users.User;
 import com.eric.monitoringserverjava.users.UserRepository;
 import com.mongodb.reactivestreams.client.MongoClient;
@@ -48,7 +48,7 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	}
 
 	@Bean
-	CommandLineRunner init (RuleRepository ruleRepository, UserRepository userRepository) {
+	CommandLineRunner init (RestRuleRepository ruleRepository, UserRepository userRepository) {
 		return args -> {
 			TimerTask timerTask = new TimerTask() {
 				@Override
@@ -66,8 +66,7 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 
 			ruleRepository.deleteAll().subscribe();
 			ruleRepository.saveAll(Flux.just(
-			  new RestRule(null, "rest rule name", 30, HttpStatus.OK, "{}", RequestMethod.GET),
-			  new HttpRule(null, "rule", 30, HttpStatus.OK, "{}")
+			  new RestRule(null, "rest rule name", 30, HttpStatus.OK, "{}", RequestMethod.GET)
 			)).subscribe();
 		};
 	}

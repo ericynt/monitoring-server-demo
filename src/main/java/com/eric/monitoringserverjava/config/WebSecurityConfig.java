@@ -38,6 +38,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		  .csrf().disable()
 		  .authorizeRequests()
 		  .antMatchers("/api/**").hasAnyRole(ADMIN.toString(), USER.toString(), GUEST.toString());
+
+	}
+
+	@Bean
+	public CustomAuthenticationUserDetailsService customAuthenticationUserDetailsService () {
+		return new CustomAuthenticationUserDetailsService(userService);
 	}
 
 	@Autowired
@@ -47,17 +53,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public PreAuthenticatedAuthenticationProvider preauthAuthProvider () {
-		PreAuthenticatedAuthenticationProvider preauthAuthProvider =
-		  new PreAuthenticatedAuthenticationProvider();
-		preauthAuthProvider.setPreAuthenticatedUserDetailsService(
-		  customAuthenticationUserDetailsService());
+		PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
+		preauthAuthProvider.setPreAuthenticatedUserDetailsService(customAuthenticationUserDetailsService());
 
 		return preauthAuthProvider;
-	}
-
-	@Bean
-	public CustomAuthenticationUserDetailsService customAuthenticationUserDetailsService () {
-		return new CustomAuthenticationUserDetailsService(userService);
 	}
 
 	@Bean

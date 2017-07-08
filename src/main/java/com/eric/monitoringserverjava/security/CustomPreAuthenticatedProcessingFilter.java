@@ -44,7 +44,7 @@ public class CustomPreAuthenticatedProcessingFilter extends AbstractPreAuthentic
 
 				if (parts.length > 1) {
 					String token = String.join("", Arrays.copyOfRange(parts, 1, parts.length));
-					String userName = getUserNameFromToken(token, tokenSecret);
+					String userName = getUserNameFromToken(token);
 					User user = userService.getUserByName(userName);
 
 					if (LOGGER.isDebugEnabled()) {

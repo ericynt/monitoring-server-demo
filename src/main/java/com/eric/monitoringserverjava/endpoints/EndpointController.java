@@ -12,47 +12,47 @@ import reactor.core.publisher.Mono;
 /**
  *
  */
-@RequestMapping("api/")
+@RequestMapping("api/rest-endpoint-configs/")
 @RestController
 public class EndpointController {
-	private EndpointService endpointService;
+	private RestEndpointService restEndpointService;
 
 	@Autowired
-	public EndpointController (EndpointService endpointService) {
-		this.endpointService = endpointService;
+	public EndpointController (RestEndpointService restEndpointService) {
+		this.restEndpointService = restEndpointService;
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
-	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.GET)
-	Flux<EndpointConfig> getAllEndpointConfigs () {
-		return endpointService.getAllEndpointConfigs();
+	@RequestMapping(method = RequestMethod.GET)
+	Flux<RestEndpointConfig> getAllRestEndpointConfigs () {
+		return restEndpointService.getAllRestEndpointConfigs();
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
-	@RequestMapping(value = "endpoint-configs/{id}", method = RequestMethod.GET)
-	Mono<EndpointConfig> getEndpointConfigById (@PathVariable Publisher<String> id) {
-		return endpointService.getEndpointConfigById(id);
+	@RequestMapping(value = "{id}", method = RequestMethod.GET)
+	Mono<RestEndpointConfig> getRestEndpointConfigById (@PathVariable Publisher<String> id) {
+		return restEndpointService.getRestEndpointConfigById(id);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.POST)
-	Mono<ResponseEntity<EndpointConfig>> createEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.createEndpointConfig(endpointConfig).map(
-		  (createdEndpointConfig) -> new ResponseEntity<>(createdEndpointConfig, HttpStatus.CREATED)
+	@RequestMapping(method = RequestMethod.POST)
+	Mono<ResponseEntity<RestEndpointConfig>> createRestEndpointConfig (@RequestBody RestEndpointConfig restEndpointConfig) {
+		return restEndpointService.createRestEndpointConfig(restEndpointConfig).map(
+		  (rec) -> new ResponseEntity<>(rec, HttpStatus.CREATED)
 		);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.PUT)
-	Mono<ResponseEntity> updateEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.updateEndpointConfig(endpointConfig).map(
-		  (updatedEndpointConfig) -> new ResponseEntity(updatedEndpointConfig, HttpStatus.OK)
+	@RequestMapping(method = RequestMethod.PUT)
+	Mono<ResponseEntity> updateRestEndpointConfig (@RequestBody RestEndpointConfig restEndpointConfig) {
+		return restEndpointService.updateRestEndpointConfig(restEndpointConfig).map(
+		  (rec) -> new ResponseEntity(rec, HttpStatus.OK)
 		).defaultIfEmpty(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
-	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.DELETE)
-	Mono<Void> deleteEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.deleteEndpointConfig(endpointConfig);
+	@RequestMapping(method = RequestMethod.DELETE)
+	Mono<Void> deleteRestEndpointConfig (@RequestBody RestEndpointConfig restEndpointConfig) {
+		return restEndpointService.deleteRestEndpointConfig(restEndpointConfig);
 	}
 }
