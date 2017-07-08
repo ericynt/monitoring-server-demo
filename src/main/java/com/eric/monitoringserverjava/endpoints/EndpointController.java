@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -39,7 +36,7 @@ public class EndpointController {
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.POST)
-	Mono<ResponseEntity<EndpointConfig>> createEndpointConfig (EndpointConfig endpointConfig) {
+	Mono<ResponseEntity<EndpointConfig>> createEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
 		return endpointService.createEndpointConfig(endpointConfig).map(
 		  (createdEndpointConfig) -> new ResponseEntity<>(createdEndpointConfig, HttpStatus.CREATED)
 		);
@@ -47,7 +44,7 @@ public class EndpointController {
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.PUT)
-	Mono<ResponseEntity> updateEndpointConfig (EndpointConfig endpointConfig) {
+	Mono<ResponseEntity> updateEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
 		return endpointService.updateEndpointConfig(endpointConfig).map(
 		  (updatedEndpointConfig) -> new ResponseEntity(updatedEndpointConfig, HttpStatus.OK)
 		).defaultIfEmpty(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
@@ -55,7 +52,7 @@ public class EndpointController {
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(value = "endpoint-configs/", method = RequestMethod.DELETE)
-	Mono<Void> deleteEndpointConfig (EndpointConfig endpointConfig) {
+	Mono<Void> deleteEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
 		return endpointService.deleteEndpointConfig(endpointConfig);
 	}
 }
