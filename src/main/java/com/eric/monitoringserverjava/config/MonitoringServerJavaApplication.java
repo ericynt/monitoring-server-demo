@@ -10,6 +10,7 @@ import com.mongodb.reactivestreams.client.MongoClients;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
@@ -17,6 +18,7 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 
 import java.util.TimerTask;
@@ -45,6 +47,11 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	public static void main (String[] args) {
 		SpringApplication.run(MonitoringServerJavaApplication.class, args);
 
+	}
+
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+		return builder.build();
 	}
 
 	@Bean
