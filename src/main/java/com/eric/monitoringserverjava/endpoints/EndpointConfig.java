@@ -1,34 +1,51 @@
 package com.eric.monitoringserverjava.endpoints;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  *
  */
-public abstract class EndpointConfig {
+@Document
+public class EndpointConfig {
 	@Id
 	private String id;
 	private String name;
 	private EndpointType endpointType;
 	private Protocol protocol;
+	private String host;
+	private int port;
+	private String path;
 
-	public enum EndpointType {REST}
+	public enum EndpointType {REST, SOAP}
 
 	public enum Protocol {HTTP, HTTPS}
 
-	EndpointConfig () {
-	}
-
-	EndpointConfig (String id, String name, EndpointType endpointType, Protocol protocol) {
+	public EndpointConfig (String id, String name, EndpointType endpointType, Protocol protocol, String host, int port, String path) {
 		this.id = id;
 		this.name = name;
 		this.endpointType = endpointType;
 		this.protocol = protocol;
+		this.host = host;
+		this.port = port;
+		this.path = path;
 	}
 
-	public abstract URL getUrl ();
+	public URI getUrl () {
+		URI url = null;
+
+		try {
+			url = new URI(getProtocol().toString().toLowerCase() + "://" + host + ':' + port + '/' + path);
+		} catch (URISyntaxException e) {
+			// TODO logging
+			e.printStackTrace();
+		}
+
+		return url;
+	}
 
 	public String getId () {
 		return id;
@@ -50,12 +67,40 @@ public abstract class EndpointConfig {
 		return endpointType;
 	}
 
+	public void setEndpointType (EndpointType endpointType) {
+		this.endpointType = endpointType;
+	}
+
 	public Protocol getProtocol () {
 		return protocol;
 	}
 
 	public void setProtocol (Protocol protocol) {
 		this.protocol = protocol;
+	}
+
+	public String getHost () {
+		return host;
+	}
+
+	public void setHost (String host) {
+		this.host = host;
+	}
+
+	public int getPort () {
+		return port;
+	}
+
+	public void setPort (int port) {
+		this.port = port;
+	}
+
+	public String getPath () {
+		return path;
+	}
+
+	public void setPath (String path) {
+		this.path = path;
 	}
 
 	@Override
@@ -65,6 +110,9 @@ public abstract class EndpointConfig {
 		  ", name='" + name + '\'' +
 		  ", endpointType=" + endpointType +
 		  ", protocol=" + protocol +
+		  ", host='" + host + '\'' +
+		  ", port=" + port +
+		  ", path='" + path + '\'' +
 		  '}';
 	}
 }

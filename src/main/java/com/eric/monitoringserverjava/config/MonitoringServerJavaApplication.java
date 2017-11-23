@@ -1,12 +1,13 @@
 package com.eric.monitoringserverjava.config;
 
-import com.eric.monitoringserverjava.rules.HttpRule;
-import com.eric.monitoringserverjava.rules.RestRule;
-import com.eric.monitoringserverjava.rules.RestRuleRepository;
+import com.eric.monitoringserverjava.jobs.JobSyncer;
+import com.eric.monitoringserverjava.rules.Rule;
+import com.eric.monitoringserverjava.rules.RuleRepository;
 import com.eric.monitoringserverjava.users.User;
 import com.eric.monitoringserverjava.users.UserRepository;
 import com.mongodb.reactivestreams.client.MongoClient;
 import com.mongodb.reactivestreams.client.MongoClients;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 import reactor.core.publisher.Flux;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 @SpringBootApplication
@@ -28,6 +30,9 @@ import java.util.TimerTask;
 @EnableReactiveMongoRepositories("com.eric.monitoringserverjava")
 public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfiguration {
 	private static final String DB_NAME = "test";
+
+//	@Autowired
+//	private JobSyncer jobSyncer;
 
 	@Bean
 	public MongoClient mongoClient () {
@@ -50,21 +55,22 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	}
 
 	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder builder) {
+	public RestTemplate restTemplate (RestTemplateBuilder builder) {
 		return builder.build();
 	}
 
 	@Bean
-	CommandLineRunner init (RestRuleRepository ruleRepository, UserRepository userRepository) {
+	CommandLineRunner init (RuleRepository ruleRepository, UserRepository userRepository) {
 		return args -> {
 			TimerTask timerTask = new TimerTask() {
 				@Override
 				public void run () {
-
+//					jobSyncer.run();
 				}
 			};
-//			Timer timer = new Timer();
-//			timer.scheduleAtFixedRate(timerTask, 0, 10000);
+
+			Timer timer = new Timer();
+			timer.scheduleAtFixedRate(timerTask, 0, 60 * 10 * 1000);
 
 			userRepository.deleteAll().subscribe();
 			userRepository.saveAll(Flux.just(
@@ -73,7 +79,7 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 
 			ruleRepository.deleteAll().subscribe();
 			ruleRepository.saveAll(Flux.just(
-			  new RestRule(null, "rest rule name", 30, HttpStatus.OK, "{}", RequestMethod.GET)
+			  new Rule(null, RequestMethod.GET, HttpStatus.OK, "{}",  "rule name", 30)
 			)).subscribe();
 		};
 	}

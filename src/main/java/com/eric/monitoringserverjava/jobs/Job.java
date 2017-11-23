@@ -1,8 +1,8 @@
 package com.eric.monitoringserverjava.jobs;
 
-import com.eric.monitoringserverjava.users.User;
 import com.eric.monitoringserverjava.endpoints.EndpointConfig;
 import com.eric.monitoringserverjava.rules.Rule;
+import com.eric.monitoringserverjava.users.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 

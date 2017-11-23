@@ -12,16 +12,15 @@ import java.time.LocalDateTime;
 public class RuleResult {
 	@Id
 	private String id;
+
 	private String jobId;
 	private LocalDateTime startTime;
-	private int requestDuration;
+	private long requestDuration;
 	private boolean status;
 
-	public RuleResult () {
-	}
-
-	public RuleResult (String id, LocalDateTime startTime, int requestDuration, boolean status) {
+	public RuleResult (String id, String jobId, LocalDateTime startTime, long requestDuration, boolean status) {
 		this.id = id;
+		this.jobId = jobId;
 		this.startTime = startTime;
 		this.requestDuration = requestDuration;
 		this.status = status;
@@ -51,11 +50,11 @@ public class RuleResult {
 		this.startTime = startTime;
 	}
 
-	public int getRequestDuration () {
+	public long getRequestDuration () {
 		return requestDuration;
 	}
 
-	public void setRequestDuration (int requestDuration) {
+	public void setRequestDuration (long requestDuration) {
 		this.requestDuration = requestDuration;
 	}
 
@@ -71,6 +70,7 @@ public class RuleResult {
 	public String toString () {
 		return "RuleResult{" +
 		  "id='" + id + '\'' +
+		  ", jobId='" + jobId + '\'' +
 		  ", startTime=" + startTime +
 		  ", requestDuration=" + requestDuration +
 		  ", status=" + status +
