@@ -56,7 +56,7 @@ public class CustomPreAuthenticatedProcessingFilter extends AbstractPreAuthentic
 						verifyJWTToken(tokenSecret, user, token);
 					} catch (UnsupportedEncodingException | JWTVerificationException e) {
 						if (LOGGER.isErrorEnabled()) {
-							LOGGER.error("Something went wrong while verifying token {} with user {}.", token, user);
+							LOGGER.error("Something went wrong while verifying token {} with user {}, exception details: {}.", token, user, e.getMessage());
 						}
 
 						return null;

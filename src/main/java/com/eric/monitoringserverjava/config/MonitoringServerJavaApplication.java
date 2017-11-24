@@ -60,8 +60,6 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	@Bean
 	CommandLineRunner init (RuleRepository ruleRepository, UserRepository userRepository, JobRepository jobRepository, EndpointRepository endpointRepository) {
 		return args -> {
-			System.setProperty("https.protocols", "TLSv1.2,TLSv1.1,TLSv1");
-
 			ruleRepository.deleteAll().subscribe();
 			Rule rule = new Rule(
 			  null,
@@ -71,9 +69,6 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 			  "Check municipality",
 			  30
 			);
-//			ruleRepository.saveAll(Flux.just(
-//			  rule
-//			)).subscribe();
 
 			endpointRepository.deleteAll().subscribe();
 			EndpointConfig endpointConfig = new EndpointConfig(
@@ -85,9 +80,6 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 			  443,
 			  "/lvbag/bag-viewer/api/getGemeenteByCoordinates/160000.000/455000.000"
 			);
-//			endpointRepository.saveAll(Flux.just(
-//			  endpointConfig
-//			)).subscribe();
 
 			userRepository.deleteAll().subscribe();
 			userRepository.saveAll(Flux.just(
