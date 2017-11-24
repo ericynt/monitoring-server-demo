@@ -3,8 +3,11 @@ package com.eric.monitoringserverjava.jobs;
 import com.eric.monitoringserverjava.dashboard.RuleResult;
 import com.eric.monitoringserverjava.remotes.RemoteService;
 import com.eric.monitoringserverjava.rules.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 
+import java.net.URI;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
  *
  */
 class JobExecutor {
+	private Logger LOGGER = LoggerFactory.getLogger(JobExecutor.class);
 	private ScheduledExecutorService scheduler;
 	private Job job;
 	private RemoteService remoteService;
@@ -32,24 +36,26 @@ class JobExecutor {
 		return job;
 	}
 
-	public void start () {
+	void start () {
 		scheduler.scheduleAtFixedRate(() -> {
 			  LocalDateTime startTime = LocalDateTime.now();
-			  ResponseEntity<String> responseEntity = remoteService.sendGetRequest(job.getEndpointConfig().getUrl());
+			  LOGGER.info("Starting request at {} for job {}.", startTime, job);
+			  URI url = job.getEndpointConfig().getUrl();
+			  ResponseEntity<String> responseEntity = remoteService.sendGetRequest(url);
 			  List<Rule> rules = job.getRules();
 			  Duration duration = Duration.between(startTime, LocalDateTime.now());
-			  List<RuleResult> ruleResult = rules.stream().map((r) -> {
-				  return new RuleResult(
-				    null,
-					job.getId(),
-					startTime,
-					duration.getSeconds(),
-					// TODO use sameJSONAs
-					responseEntity.getBody().equals(
-					  r.getExpectedResponseBody()
-					)
-				  );
-			  }).collect(Collectors.toList());
+			  LOGGER.info("Completed request for job {}, with duration {}.", job, duration);
+			  List<RuleResult> ruleResults = rules.stream().map((r) -> new RuleResult(
+				null,
+				job.getId(),
+				startTime,
+				duration.toMillis(),
+				// TODO use sameJSONAs
+				responseEntity.getBody().equals(
+				  r.getExpectedResponseBody()
+				)
+			  )).collect(Collectors.toList());
+			  LOGGER.info("Request rule results: {}.", ruleResults);
 		  },
 		  0L,
 		  job.getIntervalSeconds(),

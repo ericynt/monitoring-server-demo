@@ -31,8 +31,7 @@ public class JobManager implements ServletContextListener {
 	@Override
 	public void contextInitialized (ServletContextEvent servletContextEvent) {
 		scheduler = Executors.newSingleThreadScheduledExecutor();
-
-		scheduler.scheduleAtFixedRate(jobSyncer, INITIAL_DELAY, PERIOD, TimeUnit.MINUTES);
+		scheduler.scheduleAtFixedRate(jobSyncer, INITIAL_DELAY, PERIOD, TimeUnit.SECONDS);
 	}
 
 	@Override

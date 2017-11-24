@@ -16,14 +16,14 @@ public class RuleResult {
 	private String jobId;
 	private LocalDateTime startTime;
 	private long requestDuration;
-	private boolean status;
+	private boolean passed;
 
-	public RuleResult (String id, String jobId, LocalDateTime startTime, long requestDuration, boolean status) {
+	public RuleResult (String id, String jobId, LocalDateTime startTime, long requestDuration, boolean passed) {
 		this.id = id;
 		this.jobId = jobId;
 		this.startTime = startTime;
 		this.requestDuration = requestDuration;
-		this.status = status;
+		this.passed = passed;
 	}
 
 	public String getId () {
@@ -58,12 +58,12 @@ public class RuleResult {
 		this.requestDuration = requestDuration;
 	}
 
-	public boolean isStatus () {
-		return status;
+	public boolean isPassed () {
+		return passed;
 	}
 
-	public void setStatus (boolean status) {
-		this.status = status;
+	public void setPassed (boolean passed) {
+		this.passed = passed;
 	}
 
 	@Override
@@ -73,7 +73,7 @@ public class RuleResult {
 		  ", jobId='" + jobId + '\'' +
 		  ", startTime=" + startTime +
 		  ", requestDuration=" + requestDuration +
-		  ", status=" + status +
+		  ", passed=" + passed +
 		  '}';
 	}
 }

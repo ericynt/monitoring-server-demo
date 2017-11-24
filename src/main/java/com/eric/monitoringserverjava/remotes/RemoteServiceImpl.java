@@ -7,7 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
+import javax.net.ssl.*;
 import java.net.URI;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
 
 /**
  *
@@ -21,6 +26,38 @@ public class RemoteServiceImpl implements RemoteService {
 	@Autowired
 	public RemoteServiceImpl (RestTemplate restTemplate) {
 		this.restTemplate = restTemplate;
+	}
+
+	@PostConstruct
+	private void init () {
+		disableCertificateVerification();
+	}
+
+	private void disableCertificateVerification () {
+		TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
+			public java.security.cert.X509Certificate[] getAcceptedIssuers () {
+				return null;
+			}
+
+			@Override
+			public void checkClientTrusted (java.security.cert.X509Certificate[] arg0, String arg1) throws CertificateException {
+			}
+
+			@Override
+			public void checkServerTrusted (java.security.cert.X509Certificate[] arg0, String arg1)
+			  throws CertificateException {
+			}
+		}};
+
+		try {
+			SSLContext sslContext = SSLContext.getInstance("SSL");
+			sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
+			HttpsURLConnection.setDefaultHostnameVerifier(
+			  (hostname, session) -> hostname.equals("IPADDRESS"));
+		} catch (NoSuchAlgorithmException | KeyManagementException e) {
+			LOGGER.error(e.toString());
+		}
 	}
 
 	@Override

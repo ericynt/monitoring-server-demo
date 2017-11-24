@@ -38,7 +38,7 @@ public class EndpointConfig {
 		URI url = null;
 
 		try {
-			url = new URI(getProtocol().toString().toLowerCase() + "://" + host + ':' + port + '/' + path);
+			url = new URI(getProtocol().toString().toLowerCase() + "://" + host + ':' + port + path);
 		} catch (URISyntaxException e) {
 			// TODO logging
 			e.printStackTrace();
