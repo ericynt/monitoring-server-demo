@@ -39,12 +39,12 @@ class JobExecutor {
 	void start () {
 		scheduler.scheduleAtFixedRate(() -> {
 			  LocalDateTime startTime = LocalDateTime.now();
-			  LOGGER.info("Starting request at {} for job {}.", startTime, job);
+			  LOGGER.debug("Starting request at {} for job {}.", startTime, job);
 			  URI url = job.getEndpointConfig().getUrl();
 			  ResponseEntity<String> responseEntity = remoteService.sendGetRequest(url);
 			  List<Rule> rules = job.getRules();
 			  Duration duration = Duration.between(startTime, LocalDateTime.now());
-			  LOGGER.info("Completed request for job {}, with duration {}.", job, duration);
+			  LOGGER.debug("Completed request for job {}, with duration {}.", job, duration);
 			  List<RuleResult> ruleResults = rules.stream().map((r) -> new RuleResult(
 				null,
 				job.getId(),
@@ -55,7 +55,7 @@ class JobExecutor {
 				  r.getExpectedResponseBody()
 				)
 			  )).collect(Collectors.toList());
-			  LOGGER.info("Request rule results: {}.", ruleResults);
+			  LOGGER.debug("Request rule results: {}.", ruleResults);
 		  },
 		  0L,
 		  job.getIntervalSeconds(),
