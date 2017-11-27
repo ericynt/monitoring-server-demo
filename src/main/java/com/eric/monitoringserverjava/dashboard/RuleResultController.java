@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.endpoints;
+package com.eric.monitoringserverjava.dashboard;
 
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,47 +12,47 @@ import reactor.core.publisher.Mono;
 /**
  *
  */
-@RequestMapping("api/rest-endpoint-configs/")
+@RequestMapping("api/rest-ruleresults")
 @RestController
-public class EndpointController {
-	private EndpointService endpointService;
+public class RuleResultController {
+	private RuleResultService ruleResultService;
 
 	@Autowired
-	public EndpointController (EndpointService endpointService) {
-		this.endpointService = endpointService;
+	public RuleResultController (RuleResultService ruleResultService) {
+		this.ruleResultService = ruleResultService;
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
 	@RequestMapping(method = RequestMethod.GET)
-	Flux<EndpointConfig> getAllRestEndpointConfigs () {
-		return endpointService.getAllEndpointConfigs();
+	Flux<RuleResult> getAllRuleResults () {
+		return ruleResultService.getAllRuleResults();
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER','GUEST')")
 	@RequestMapping(value = "{id}", method = RequestMethod.GET)
-	Mono<EndpointConfig> getRestEndpointConfigById (@PathVariable Publisher<String> id) {
-		return endpointService.getEndpointConfigById(id);
+	Mono<RuleResult> getRuleResultById (@PathVariable Publisher<String> id) {
+		return ruleResultService.getRuleResultById(id);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(method = RequestMethod.POST)
-	Mono<ResponseEntity<EndpointConfig>> createEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.createEndpointConfig(endpointConfig).map(
-		  (rec) -> new ResponseEntity<>(rec, HttpStatus.CREATED)
+	Mono<ResponseEntity<RuleResult>> createRuleResult (@RequestBody RuleResult ruleResult) {
+		return ruleResultService.createRuleResult(ruleResult).map(
+		  (rr) -> new ResponseEntity<>(rr, HttpStatus.CREATED)
 		);
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(method = RequestMethod.PUT)
-	Mono<ResponseEntity> updateEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.updateEndpointConfig(endpointConfig).map(
+	Mono<ResponseEntity> updateEndpointConfig (@RequestBody RuleResult ruleResult) {
+		return ruleResultService.updateRuleResult(ruleResult).map(
 		  (rec) -> new ResponseEntity(rec, HttpStatus.OK)
 		).defaultIfEmpty(ResponseEntity.status(HttpStatus.NO_CONTENT).build());
 	}
 
 	@PreAuthorize("hasAnyRole('ADMIN','USER')")
 	@RequestMapping(method = RequestMethod.DELETE)
-	Mono<Void> deleteEndpointConfig (@RequestBody EndpointConfig endpointConfig) {
-		return endpointService.deleteEndpointConfig(endpointConfig);
+	Mono<Void> deleteRuleResult (@RequestBody RuleResult ruleResult) {
+		return ruleResultService.deleteRuleResult(ruleResult);
 	}
 }

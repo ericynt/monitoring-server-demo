@@ -1,5 +1,6 @@
 package com.eric.monitoringserverjava.jobs;
 
+import com.eric.monitoringserverjava.dashboard.RuleResultService;
 import com.eric.monitoringserverjava.remotes.RemoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import java.util.Set;
 public class JobSyncer implements Runnable {
 	private JobService jobService;
 	private RemoteService remoteService;
+	private RuleResultService ruleResultService;
 
 	private Set<JobExecutor> runningJobExecutors = new HashSet<>();
 
@@ -23,9 +25,10 @@ public class JobSyncer implements Runnable {
 	}
 
 	@Autowired
-	public JobSyncer (JobService jobService, RemoteService remoteService) {
+	public JobSyncer (JobService jobService, RemoteService remoteService, RuleResultService ruleResultService) {
 		this.jobService = jobService;
 		this.remoteService = remoteService;
+		this.ruleResultService = ruleResultService;
 	}
 
 	@Override
@@ -53,7 +56,7 @@ public class JobSyncer implements Runnable {
 	}
 
 	private void startJob (Job j) {
-		JobExecutor jobExecutor = new JobExecutor(j, remoteService);
+		JobExecutor jobExecutor = new JobExecutor(j, remoteService, ruleResultService);
 		jobExecutor.start();
 		runningJobExecutors.add(jobExecutor);
 	}

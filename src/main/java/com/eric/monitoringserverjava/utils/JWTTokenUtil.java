@@ -22,6 +22,7 @@ public class JWTTokenUtil {
 
 	private static final String ROLES = "roles";
 	private static final String GUEST = "GUEST";
+	private static final int HOURS = 2;
 
 	public static String createToken (User user, String tokenSecret) {
 		String token = null;
@@ -29,7 +30,7 @@ public class JWTTokenUtil {
 			String[] roleStrings = Arrays.stream(user.getRoles()).map(User.Role::toString).toArray(String[]::new);
 			token = JWT.create()
 			  .withSubject(user.getName())
-			  .withExpiresAt(toDate(LocalDateTime.now().plusHours(2)))
+			  .withExpiresAt(toDate(LocalDateTime.now().plusHours(HOURS)))
 			  .withArrayClaim(ROLES, roleStrings)
 			  .sign(
 				Algorithm.HMAC512(tokenSecret)
@@ -78,14 +79,10 @@ public class JWTTokenUtil {
 	}
 
 	public static String getUserNameFromToken (String token) {
-		String userName = null;
+		String userName;
 
-		try {
-			DecodedJWT decodedJWT = getDecodedJWT(token);
-			userName = decodedJWT.getSubject();
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
+		DecodedJWT decodedJWT = getDecodedJWT(token);
+		userName = decodedJWT.getSubject();
 
 		if (LOGGER.isDebugEnabled()) {
 			LOGGER.debug("Retrieved username {} from token {}", userName, token);
@@ -100,7 +97,7 @@ public class JWTTokenUtil {
 		).toArray(String[]::new);
 	}
 
-	private static DecodedJWT getDecodedJWT (String token) throws UnsupportedEncodingException {
+	private static DecodedJWT getDecodedJWT (String token) {
 		return JWT.decode(token);
 	}
 }

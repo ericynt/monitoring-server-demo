@@ -33,13 +33,14 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	private static final String DB_NAME = "test";
 
 	@Bean
-	public MongoClient mongoClient () {
+	@Override
+	public MongoClient reactiveMongoClient () {
 		return MongoClients.create();
 	}
 
 	public @Bean
 	ReactiveMongoTemplate reactiveMongoTemplate () {
-		return new ReactiveMongoTemplate(mongoClient(), getDatabaseName());
+		return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
 	}
 
 	@Override
