@@ -1,4 +1,4 @@
-package com.eric.monitoringserverjava.config;
+package com.eric.monitoringserverjava.app;
 
 import com.eric.monitoringserverjava.endpoints.EndpointConfig;
 import com.eric.monitoringserverjava.endpoints.EndpointRepository;
@@ -29,7 +29,7 @@ import java.util.Collections;
 @SpringBootApplication
 @ComponentScan("com.eric.monitoringserverjava")
 @EnableReactiveMongoRepositories("com.eric.monitoringserverjava")
-public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfiguration {
+public class MonitoringServerApplication extends AbstractReactiveMongoConfiguration {
 	private static final String DB_NAME = "test";
 
 	@Bean
@@ -49,7 +49,7 @@ public class MonitoringServerJavaApplication extends AbstractReactiveMongoConfig
 	}
 
 	public static void main (String[] args) {
-		SpringApplication.run(MonitoringServerJavaApplication.class, args);
+		SpringApplication.run(MonitoringServerApplication.class, args);
 
 	}
 

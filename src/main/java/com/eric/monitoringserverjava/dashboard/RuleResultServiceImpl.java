@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
+
 /**
  *
  */
@@ -65,5 +67,14 @@ public class RuleResultServiceImpl implements RuleResultService {
 		}
 
 		return repository.delete(ruleResult);
+	}
+
+	@Override
+	public void deleteByStartTimeBefore (LocalDateTime before) {
+		if (LOGGER.isDebugEnabled()) {
+			LOGGER.debug("Deleting rule results before: {}.", before);
+		}
+
+		repository.deleteByStartTimeBefore(before);
 	}
 }

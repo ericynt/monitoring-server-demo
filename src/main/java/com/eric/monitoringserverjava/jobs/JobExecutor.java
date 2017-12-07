@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 /**
  *
  */
-class JobExecutor {
+public class JobExecutor {
 	private Logger LOGGER = LoggerFactory.getLogger(JobExecutor.class);
 	private ScheduledExecutorService scheduler;
 	private Job job;
@@ -34,11 +34,11 @@ class JobExecutor {
 		scheduler = Executors.newSingleThreadScheduledExecutor();
 	}
 
-	Job getJob () {
+	public Job getJob () {
 		return job;
 	}
 
-	void start () {
+	public void start () {
 		scheduler.scheduleAtFixedRate(() -> {
 			  LocalDateTime startTime = LocalDateTime.now();
 			  if(LOGGER.isDebugEnabled()) {
