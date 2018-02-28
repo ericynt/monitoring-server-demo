@@ -75,6 +75,6 @@ public class RuleResultServiceImpl implements RuleResultService {
 			LOGGER.debug("Deleting rule results before: {}.", before);
 		}
 
-		repository.deleteByStartTimeBefore(before);
+		repository.deleteBystartTimeBefore(before).subscribe();
 	}
 }

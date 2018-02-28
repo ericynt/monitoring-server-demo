@@ -1,7 +1,7 @@
 package com.eric.monitoringserverjava.dashboard;
 
 import org.springframework.data.repository.reactive.ReactiveCrudRepository;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 
@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
  *
  */
 public interface RuleResultRepository extends ReactiveCrudRepository<RuleResult, String> {
-	void deleteByStartTimeBefore(LocalDateTime startTime);
+	Flux<RuleResult> deleteBystartTimeBefore (LocalDateTime startTime);
 }
