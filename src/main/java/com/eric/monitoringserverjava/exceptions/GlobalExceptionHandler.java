@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-	// Catch all for now
-	@ExceptionHandler(Exception.class)
-	ResponseEntity exceptionHandler (Exception e) {
-		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-	}
-
-	@ExceptionHandler(AccessDeniedException.class)
-	ResponseEntity accessDeniedExceptionHandler (Exception e) {
-		return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-	}
+    // Catch all for now
+    @ExceptionHandler(Exception.class)
+    ResponseEntity exceptionHandler (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    }
+    
+    @ExceptionHandler(AccessDeniedException.class)
+    ResponseEntity accessDeniedExceptionHandler (Exception e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
 }

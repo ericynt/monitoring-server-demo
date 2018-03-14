@@ -2,6 +2,7 @@ package com.eric.monitoringserverjava.jobs;
 
 import com.eric.monitoringserverjava.dashboard.RuleResult;
 import com.eric.monitoringserverjava.dashboard.RuleResultService;
+import com.eric.monitoringserverjava.endpoints.EndpointService;
 import com.eric.monitoringserverjava.remotes.RemoteService;
 import com.eric.monitoringserverjava.rules.Rule;
 import org.slf4j.Logger;
@@ -20,66 +21,62 @@ import java.util.stream.Collectors;
  *
  */
 public class JobExecutor {
-	private Logger LOGGER = LoggerFactory.getLogger(JobExecutor.class);
-	private ScheduledExecutorService scheduler;
-	private Job job;
-	private RemoteService remoteService;
-	private RuleResultService ruleResultService;
-
-	JobExecutor (Job job, RemoteService remoteService, RuleResultService ruleResultService) {
-		this.job = job;
-		this.remoteService = remoteService;
-		this.ruleResultService = ruleResultService;
-
-		scheduler = Executors.newSingleThreadScheduledExecutor();
-	}
-
-	public Job getJob () {
-		return job;
-	}
-
-	public void start () {
-		scheduler.scheduleAtFixedRate(() -> {
-			  LocalDateTime startTime = LocalDateTime.now();
-			  if(LOGGER.isDebugEnabled()) {
-				  LOGGER.debug("Starting request at {} for job {}.", startTime, job);
-			  }
-			  ResponseEntity<String> responseEntity = remoteService.sendGetRequest(job.getEndpointConfig().getUrl());
-			  List<Rule> rules = job.getRules();
-			  Duration duration = Duration.between(startTime, LocalDateTime.now());
-			  if (LOGGER.isDebugEnabled()) {
-				  LOGGER.debug("Completed request for job {}, with duration {}.", job, duration);
-			  }
-			  List<RuleResult> ruleResults = rules.stream().map((r) -> {
-			  	RuleResult rr = new RuleResult(
-					null,
-					job.getId(),
-					startTime,
-					duration.toMillis(),
-					// TODO use sameJSONAs
-					responseEntity.getBody().equals(
-					  r.getExpectedResponseBody()
-					)
-			  	);
-			  	ruleResultService.createRuleResult(rr).subscribe();
-			  	if (LOGGER.isDebugEnabled()) {
-					LOGGER.debug("Rule result {} created.", rr);
-				}
-
-			  	return rr;
-			  }).collect(Collectors.toList());
-
-			  if (LOGGER.isDebugEnabled()) {
-				  LOGGER.debug("Request rule results: {}.", ruleResults);
-			  }
-		  },
-		  0L,
-		  job.getIntervalSeconds(),
-		  TimeUnit.SECONDS
-		);
-	}
-
-	public void stop () {
-		scheduler.shutdown();
-	}
+    private Logger LOGGER = LoggerFactory.getLogger(JobExecutor.class);
+    private ScheduledExecutorService scheduler;
+    private Job job;
+    private RemoteService remoteService;
+    private RuleResultService ruleResultService;
+    private EndpointService endpointService;
+    
+    JobExecutor (Job job, RemoteService remoteService, RuleResultService ruleResultService, EndpointService
+            endpointService) {
+        this.job = job;
+        this.remoteService = remoteService;
+        this.ruleResultService = ruleResultService;
+        this.endpointService = endpointService;
+        
+        scheduler = Executors.newSingleThreadScheduledExecutor();
+    }
+    
+    public Job getJob () {
+        return job;
+    }
+    
+    public void start () {
+        scheduler.scheduleAtFixedRate(
+                () -> {
+                    LocalDateTime startTime = LocalDateTime.now();
+                    LOGGER.debug("Starting request at {} for job {}.", startTime, job);
+                    ResponseEntity<String> responseEntity = remoteService
+                            .sendGetRequest(endpointService.getURI(job.getEndpointConfig()));
+                    List<Rule> rules = job.getRules();
+                    Duration duration = Duration.between(startTime, LocalDateTime.now());
+                    LOGGER.debug("Completed request for job {}, with duration {}.", job, duration);
+                    List<RuleResult> ruleResults = rules.stream().map((r) -> {
+                        RuleResult rr = new RuleResult(
+                                null,
+                                job.getId(),
+                                startTime,
+                                duration.toMillis(),
+                                // TODO use sameJSONAs
+                                responseEntity.getBody().equals(
+                                        r.getExpectedResponseBody()
+                                )
+                        );
+                        ruleResultService.createRuleResult(rr).subscribe();
+                        LOGGER.debug("Rule result {} created.", rr);
+                        
+                        return rr;
+                    }).collect(Collectors.toList());
+                    LOGGER.debug("Request rule results: {}.", ruleResults);
+                },
+                0L,
+                job.getIntervalSeconds(),
+                TimeUnit.SECONDS
+        );
+    }
+    
+    public void stop () {
+        scheduler.shutdown();
+    }
 }

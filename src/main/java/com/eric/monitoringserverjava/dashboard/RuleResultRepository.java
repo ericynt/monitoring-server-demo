@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
  *
  */
 public interface RuleResultRepository extends ReactiveCrudRepository<RuleResult, String> {
-	Flux<RuleResult> deleteBystartTimeBefore (LocalDateTime startTime);
+    Flux<RuleResult> deleteBystartTimeBefore (LocalDateTime startTime);
 }

@@ -8,5 +8,5 @@ import java.net.URI;
  *
  */
 public interface RemoteService {
-	ResponseEntity<String> sendGetRequest (URI url);
+    ResponseEntity<String> sendGetRequest (URI url);
 }

@@ -5,5 +5,4 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 /**
  *
  */
-public interface RuleRepository extends ReactiveCrudRepository<Rule, String> {
-}
+public interface RuleRepository extends ReactiveCrudRepository<Rule, String> {}

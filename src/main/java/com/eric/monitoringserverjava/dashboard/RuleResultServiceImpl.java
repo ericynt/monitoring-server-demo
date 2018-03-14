@@ -26,55 +26,42 @@ public class RuleResultServiceImpl implements RuleResultService {
 
 	@Override
 	public Flux<RuleResult> getAllRuleResults () {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Retrieving all rule results.");
-		}
+		LOGGER.debug("Retrieving all rule results.");
 
 		return repository.findAll();
 	}
 
 	@Override
 	public Mono<RuleResult> getRuleResultById (Publisher<String> id) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Retrieving rule results by Id.");
-		}
+		LOGGER.debug("Retrieving rule results by Id.");
 
 		return repository.findById(id);
 	}
 
 	@Override
 	public Mono<RuleResult> createRuleResult (RuleResult ruleResult) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Creating rule result: {}.", ruleResult);
-		}
+		LOGGER.debug("Creating rule result: {}.", ruleResult);
 
 		return repository.save(ruleResult);
 	}
 
 	@Override
 	public Mono<RuleResult> updateRuleResult (RuleResult ruleResult) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Updating rule result: {}.", ruleResult);
-		}
+		LOGGER.debug("Updating rule result: {}.", ruleResult);
 
 		return repository.save(ruleResult);
 	}
 
 	@Override
 	public Mono<Void> deleteRuleResult (RuleResult ruleResult) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Deleting rule result: {}.", ruleResult);
-		}
+		LOGGER.debug("Deleting rule result: {}.", ruleResult);
 
 		return repository.delete(ruleResult);
 	}
 
 	@Override
 	public void deleteByStartTimeBefore (LocalDateTime before) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Deleting rule results before: {}.", before);
-		}
-
+		LOGGER.debug("Deleting rule results before: {}.", before);
 		repository.deleteBystartTimeBefore(before).subscribe();
 	}
 }

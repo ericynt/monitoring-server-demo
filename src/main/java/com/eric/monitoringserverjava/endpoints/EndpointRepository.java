@@ -5,5 +5,4 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 /**
  *
  */
-public interface EndpointRepository extends ReactiveCrudRepository<EndpointConfig, String> {
-}
+public interface EndpointRepository extends ReactiveCrudRepository<EndpointConfig, String> {}

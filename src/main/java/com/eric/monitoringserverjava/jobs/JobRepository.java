@@ -5,5 +5,4 @@ import org.springframework.data.repository.reactive.ReactiveCrudRepository;
 /**
  *
  */
-public interface JobRepository extends ReactiveCrudRepository<Job, String> {
-}
+public interface JobRepository extends ReactiveCrudRepository<Job, String> {}

@@ -24,46 +24,36 @@ public class JobServiceImpl implements JobService {
 
 	@Override
 	public Flux<Job> getAllJobs () {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Retrieving jobs.");
-		}
+		LOGGER.debug("Retrieving jobs.");
 
 		return repository.findAll();
 	}
 
 	@Override
 	public Mono<Job> getJobsById (Publisher<String> id) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Retrieving job by Id.");
-		}
+		LOGGER.debug("Retrieving job by Id.");
 
 		return repository.findById(id);
 	}
 
 	@Override
 	public Mono<Job> createJob (Job job) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Creating job: {}.", job);
-		}
+		LOGGER.debug("Creating job: {}.", job);
 
 		return repository.save(job);
 	}
 
 	@Override
 	public Mono<Job> updateJob (Job job) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Updating job: {}.", job);
-		}
+		LOGGER.debug("Updating job: {}.", job);
 
 		return repository.save(job);
 	}
 
 	@Override
 	public Mono<Void> deleteJob (Job job) {
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Deleting job: {}.", job);
-		}
+		LOGGER.debug("Deleting job: {}.", job);
 
-		return  repository.delete(job);
+		return repository.delete(job);
 	}
 }

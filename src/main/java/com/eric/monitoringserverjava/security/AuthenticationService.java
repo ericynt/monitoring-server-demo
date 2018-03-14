@@ -6,5 +6,5 @@ import com.eric.monitoringserverjava.users.User;
  *
  */
 public interface AuthenticationService {
-	String authenticate (User user);
+    String authenticate (User user);
 }
