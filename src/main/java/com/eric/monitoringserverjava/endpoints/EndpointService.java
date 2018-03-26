@@ -10,15 +10,15 @@ import java.net.URI;
  *
  */
 public interface EndpointService {
-	Mono<EndpointConfig> createEndpointConfig (EndpointConfig endpointConfig);
+    Mono<EndpointConfig> createEndpointConfig (EndpointConfig endpointConfig);
 
-	Flux<EndpointConfig> getAllEndpointConfigs ();
+    Flux<EndpointConfig> getAllEndpointConfigs ();
 
-	Mono<EndpointConfig> getEndpointConfigById (Publisher<String> id);
+    Mono<EndpointConfig> getEndpointConfigById (Publisher<String> id);
 
-	Mono<EndpointConfig> updateEndpointConfig (EndpointConfig endpointConfig);
+    Mono<EndpointConfig> updateEndpointConfig (EndpointConfig endpointConfig);
 
-	Mono<Void> deleteEndpointConfig (EndpointConfig endpointConfig);
-    
+    Mono<Void> deleteEndpointConfig (EndpointConfig endpointConfig);
+
     URI getURI (EndpointConfig endpointConfig);
 }

@@ -22,34 +22,34 @@ import java.security.NoSuchAlgorithmException;
 @Service
 public class RemoteServiceImpl implements RemoteService {
     private static Logger LOGGER = LoggerFactory.getLogger(RemoteServiceImpl.class);
-    
+
     private RestTemplate restTemplate;
-    
+
     @Autowired
     public RemoteServiceImpl (RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
-    
+
     @PostConstruct
     private void init () {
         disableCertificateVerification();
     }
-    
+
     private void disableCertificateVerification () {
         TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
             public java.security.cert.X509Certificate[] getAcceptedIssuers () {
                 return null;
             }
-            
+
             @Override
             public void checkClientTrusted (java.security.cert.X509Certificate[] arg0, String arg1) {
             }
-            
+
             @Override
             public void checkServerTrusted (java.security.cert.X509Certificate[] arg0, String arg1) {
             }
         }};
-        
+
         try {
             SSLContext sslContext = SSLContext.getInstance("SSL");
             sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
@@ -60,7 +60,7 @@ public class RemoteServiceImpl implements RemoteService {
             LOGGER.error(e.toString());
         }
     }
-    
+
     @Override
     public ResponseEntity<String> sendGetRequest (URI url) {
         ResponseEntity<String> entity = restTemplate.getForEntity(url, String.class);
@@ -70,7 +70,7 @@ public class RemoteServiceImpl implements RemoteService {
                 url,
                 entity.getStatusCode()
         );
-        
+
         return entity;
     }
 }

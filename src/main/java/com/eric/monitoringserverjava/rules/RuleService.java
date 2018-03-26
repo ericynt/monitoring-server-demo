@@ -9,12 +9,12 @@ import reactor.core.publisher.Mono;
  */
 public interface RuleService {
     Flux<Rule> getRules ();
-    
+
     Mono<Rule> getRules (Publisher<String> id);
-    
+
     Mono<Rule> createRule (Rule rule);
-    
+
     Mono<Rule> updateRule (Rule rule);
-    
+
     Mono<Void> deleteRule (Rule rule);
 }

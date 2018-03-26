@@ -31,38 +31,41 @@ import java.util.Collections;
 @EnableReactiveMongoRepositories("com.eric.monitoringserverjava")
 public class MonitoringServerApplication extends AbstractReactiveMongoConfiguration {
     private static final String DB_NAME = "test";
-    
+
     @Bean
     @Override
     public MongoClient reactiveMongoClient () {
         return MongoClients.create();
     }
-    
+
     public @Bean
     ReactiveMongoTemplate reactiveMongoTemplate () {
         return new ReactiveMongoTemplate(reactiveMongoClient(), getDatabaseName());
     }
-    
+
     @Override
     protected String getDatabaseName () {
         return DB_NAME;
     }
-    
+
     public static void main (String[] args) {
         SpringApplication.run(MonitoringServerApplication.class, args);
-        
+
     }
-    
+
     @Bean
     public RestTemplate restTemplate (RestTemplateBuilder builder) {
         return builder.build();
     }
-    
+
     @Bean
-    CommandLineRunner init (RuleRepository ruleRepository, UserRepository userRepository, JobRepository
-            jobRepository, EndpointRepository endpointRepository) {
+    CommandLineRunner init (
+            RuleRepository ruleRepository, UserRepository userRepository, JobRepository
+            jobRepository, EndpointRepository endpointRepository
+    ) {
         return args -> {
-            ruleRepository.deleteAll().subscribe();
+            ruleRepository.deleteAll()
+                          .subscribe();
             Rule rule = new Rule(
                     null,
                     RequestMethod.GET,
@@ -72,8 +75,9 @@ public class MonitoringServerApplication extends AbstractReactiveMongoConfigurat
                     "Check municipality",
                     30
             );
-            
-            endpointRepository.deleteAll().subscribe();
+
+            endpointRepository.deleteAll()
+                              .subscribe();
             EndpointConfig endpointConfig = new EndpointConfig(
                     null,
                     "my-config",
@@ -83,17 +87,22 @@ public class MonitoringServerApplication extends AbstractReactiveMongoConfigurat
                     443,
                     "/lvbag/bag-viewer/api/getGemeenteByCoordinates/160000.000/455000.000"
             );
-            
-            userRepository.deleteAll().subscribe();
+
+            userRepository.deleteAll()
+                          .subscribe();
             userRepository.saveAll(Flux.just(
                     new User(null, "eric", "asdf", new User.Role[]{User.Role.ADMIN}, "")
-            )).subscribe();
-            userRepository.findByName("eric").subscribe(u -> {
-                jobRepository.deleteAll().subscribe();
-                jobRepository.saveAll(Flux.just(
-                        new Job(null, Collections.singletonList(rule), endpointConfig, 2, true, u)
-                )).subscribe();
-            });
+            ))
+                          .subscribe();
+            userRepository.findByName("eric")
+                          .subscribe(u -> {
+                              jobRepository.deleteAll()
+                                           .subscribe();
+                              jobRepository.saveAll(Flux.just(
+                                      new Job(null, Collections.singletonList(rule), endpointConfig, 2, true, u)
+                              ))
+                                           .subscribe();
+                          });
         };
     }
 }

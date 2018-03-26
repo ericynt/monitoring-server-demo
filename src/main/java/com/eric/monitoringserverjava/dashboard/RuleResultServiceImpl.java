@@ -15,53 +15,54 @@ import java.time.LocalDateTime;
  */
 @Service
 public class RuleResultServiceImpl implements RuleResultService {
-	private static Logger LOGGER = LoggerFactory.getLogger(RuleResultServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(RuleResultServiceImpl.class);
 
-	private RuleResultRepository repository;
+    private RuleResultRepository repository;
 
-	@Autowired
-	public RuleResultServiceImpl (RuleResultRepository repository) {
-		this.repository = repository;
-	}
+    @Autowired
+    public RuleResultServiceImpl (RuleResultRepository repository) {
+        this.repository = repository;
+    }
 
-	@Override
-	public Flux<RuleResult> getAllRuleResults () {
-		LOGGER.debug("Retrieving all rule results.");
+    @Override
+    public Flux<RuleResult> getAllRuleResults () {
+        LOGGER.debug("Retrieving all rule results.");
 
-		return repository.findAll();
-	}
+        return repository.findAll();
+    }
 
-	@Override
-	public Mono<RuleResult> getRuleResultById (Publisher<String> id) {
-		LOGGER.debug("Retrieving rule results by Id.");
+    @Override
+    public Mono<RuleResult> getRuleResultById (Publisher<String> id) {
+        LOGGER.debug("Retrieving rule results by Id.");
 
-		return repository.findById(id);
-	}
+        return repository.findById(id);
+    }
 
-	@Override
-	public Mono<RuleResult> createRuleResult (RuleResult ruleResult) {
-		LOGGER.debug("Creating rule result: {}.", ruleResult);
+    @Override
+    public Mono<RuleResult> createRuleResult (RuleResult ruleResult) {
+        LOGGER.debug("Creating rule result: {}.", ruleResult);
 
-		return repository.save(ruleResult);
-	}
+        return repository.save(ruleResult);
+    }
 
-	@Override
-	public Mono<RuleResult> updateRuleResult (RuleResult ruleResult) {
-		LOGGER.debug("Updating rule result: {}.", ruleResult);
+    @Override
+    public Mono<RuleResult> updateRuleResult (RuleResult ruleResult) {
+        LOGGER.debug("Updating rule result: {}.", ruleResult);
 
-		return repository.save(ruleResult);
-	}
+        return repository.save(ruleResult);
+    }
 
-	@Override
-	public Mono<Void> deleteRuleResult (RuleResult ruleResult) {
-		LOGGER.debug("Deleting rule result: {}.", ruleResult);
+    @Override
+    public Mono<Void> deleteRuleResult (RuleResult ruleResult) {
+        LOGGER.debug("Deleting rule result: {}.", ruleResult);
 
-		return repository.delete(ruleResult);
-	}
+        return repository.delete(ruleResult);
+    }
 
-	@Override
-	public void deleteByStartTimeBefore (LocalDateTime before) {
-		LOGGER.debug("Deleting rule results before: {}.", before);
-		repository.deleteBystartTimeBefore(before).subscribe();
-	}
+    @Override
+    public void deleteByStartTimeBefore (LocalDateTime before) {
+        LOGGER.debug("Deleting rule results before: {}.", before);
+        repository.deleteBystartTimeBefore(before)
+                  .subscribe();
+    }
 }

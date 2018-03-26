@@ -13,47 +13,47 @@ import reactor.core.publisher.Mono;
  */
 @Service
 public class JobServiceImpl implements JobService {
-	private static Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(JobServiceImpl.class);
 
-	private JobRepository repository;
+    private JobRepository repository;
 
-	@Autowired
-	public JobServiceImpl (JobRepository repository) {
-		this.repository = repository;
-	}
+    @Autowired
+    public JobServiceImpl (JobRepository repository) {
+        this.repository = repository;
+    }
 
-	@Override
-	public Flux<Job> getAllJobs () {
-		LOGGER.debug("Retrieving jobs.");
+    @Override
+    public Flux<Job> getAllJobs () {
+        LOGGER.debug("Retrieving jobs.");
 
-		return repository.findAll();
-	}
+        return repository.findAll();
+    }
 
-	@Override
-	public Mono<Job> getJobsById (Publisher<String> id) {
-		LOGGER.debug("Retrieving job by Id.");
+    @Override
+    public Mono<Job> getJobsById (Publisher<String> id) {
+        LOGGER.debug("Retrieving job by Id.");
 
-		return repository.findById(id);
-	}
+        return repository.findById(id);
+    }
 
-	@Override
-	public Mono<Job> createJob (Job job) {
-		LOGGER.debug("Creating job: {}.", job);
+    @Override
+    public Mono<Job> createJob (Job job) {
+        LOGGER.debug("Creating job: {}.", job);
 
-		return repository.save(job);
-	}
+        return repository.save(job);
+    }
 
-	@Override
-	public Mono<Job> updateJob (Job job) {
-		LOGGER.debug("Updating job: {}.", job);
+    @Override
+    public Mono<Job> updateJob (Job job) {
+        LOGGER.debug("Updating job: {}.", job);
 
-		return repository.save(job);
-	}
+        return repository.save(job);
+    }
 
-	@Override
-	public Mono<Void> deleteJob (Job job) {
-		LOGGER.debug("Deleting job: {}.", job);
+    @Override
+    public Mono<Void> deleteJob (Job job) {
+        LOGGER.debug("Deleting job: {}.", job);
 
-		return repository.delete(job);
-	}
+        return repository.delete(job);
+    }
 }

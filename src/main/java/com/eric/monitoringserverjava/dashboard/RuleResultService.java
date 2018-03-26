@@ -11,14 +11,14 @@ import java.time.LocalDateTime;
  */
 public interface RuleResultService {
     Flux<RuleResult> getAllRuleResults ();
-    
+
     Mono<RuleResult> getRuleResultById (Publisher<String> id);
-    
+
     Mono<RuleResult> createRuleResult (RuleResult ruleResult);
-    
+
     Mono<RuleResult> updateRuleResult (RuleResult ruleResult);
-    
+
     Mono<Void> deleteRuleResult (RuleResult ruleResult);
-    
+
     void deleteByStartTimeBefore (LocalDateTime before);
 }

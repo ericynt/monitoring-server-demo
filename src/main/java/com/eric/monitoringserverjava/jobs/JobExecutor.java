@@ -27,21 +27,23 @@ public class JobExecutor {
     private RemoteService remoteService;
     private RuleResultService ruleResultService;
     private EndpointService endpointService;
-    
-    JobExecutor (Job job, RemoteService remoteService, RuleResultService ruleResultService, EndpointService
-            endpointService) {
+
+    JobExecutor (
+            Job job, RemoteService remoteService, RuleResultService ruleResultService, EndpointService
+            endpointService
+    ) {
         this.job = job;
         this.remoteService = remoteService;
         this.ruleResultService = ruleResultService;
         this.endpointService = endpointService;
-        
+
         scheduler = Executors.newSingleThreadScheduledExecutor();
     }
-    
+
     public Job getJob () {
         return job;
     }
-    
+
     public void start () {
         scheduler.scheduleAtFixedRate(
                 () -> {
@@ -52,22 +54,26 @@ public class JobExecutor {
                     List<Rule> rules = job.getRules();
                     Duration duration = Duration.between(startTime, LocalDateTime.now());
                     LOGGER.debug("Completed request for job {}, with duration {}.", job, duration);
-                    List<RuleResult> ruleResults = rules.stream().map((r) -> {
-                        RuleResult rr = new RuleResult(
-                                null,
-                                job.getId(),
-                                startTime,
-                                duration.toMillis(),
-                                // TODO use sameJSONAs
-                                responseEntity.getBody().equals(
-                                        r.getExpectedResponseBody()
-                                )
-                        );
-                        ruleResultService.createRuleResult(rr).subscribe();
-                        LOGGER.debug("Rule result {} created.", rr);
-                        
-                        return rr;
-                    }).collect(Collectors.toList());
+                    List<RuleResult> ruleResults = rules.stream()
+                                                        .map((r) -> {
+                                                            RuleResult rr = new RuleResult(
+                                                                    null,
+                                                                    job.getId(),
+                                                                    startTime,
+                                                                    duration.toMillis(),
+                                                                    // TODO use sameJSONAs
+                                                                    responseEntity.getBody()
+                                                                                  .equals(
+                                                                                          r.getExpectedResponseBody()
+                                                                                  )
+                                                            );
+                                                            ruleResultService.createRuleResult(rr)
+                                                                             .subscribe();
+                                                            LOGGER.debug("Rule result {} created.", rr);
+
+                                                            return rr;
+                                                        })
+                                                        .collect(Collectors.toList());
                     LOGGER.debug("Request rule results: {}.", ruleResults);
                 },
                 0L,
@@ -75,7 +81,7 @@ public class JobExecutor {
                 TimeUnit.SECONDS
         );
     }
-    
+
     public void stop () {
         scheduler.shutdown();
     }

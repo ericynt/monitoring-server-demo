@@ -15,7 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
-import static com.eric.monitoringserverjava.users.User.Role.*;
+import static com.eric.monitoringserverjava.users.User.Role.ADMIN;
+import static com.eric.monitoringserverjava.users.User.Role.GUEST;
+import static com.eric.monitoringserverjava.users.User.Role.USER;
 
 @Configuration
 @EnableWebSecurity
@@ -24,12 +26,12 @@ import static com.eric.monitoringserverjava.users.User.Role.*;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
-    
+
     @Autowired
     public WebSecurityConfig (UserService userService) {
         this.userService = userService;
     }
-    
+
     @Override
     protected void configure (HttpSecurity http) throws Exception {
         http
@@ -38,35 +40,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         AbstractPreAuthenticatedProcessingFilter.class
                 )
                 .authenticationProvider(preauthAuthProvider())
-                .csrf().disable()
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/api/**").hasAnyRole(ADMIN.toString(), USER.toString(), GUEST.toString());
-        
+                .antMatchers("/api/**")
+                .hasAnyRole(ADMIN.toString(), USER.toString(), GUEST.toString());
+
     }
-    
+
     @Bean
     public CustomAuthenticationUserDetailsService customAuthenticationUserDetailsService () {
         return new CustomAuthenticationUserDetailsService(userService);
     }
-    
+
     @Autowired
     public void configureGlobal (AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(preauthAuthProvider());
     }
-    
+
     @Bean
     public PreAuthenticatedAuthenticationProvider preauthAuthProvider () {
         PreAuthenticatedAuthenticationProvider preauthAuthProvider = new PreAuthenticatedAuthenticationProvider();
         preauthAuthProvider.setPreAuthenticatedUserDetailsService(customAuthenticationUserDetailsService());
-        
+
         return preauthAuthProvider;
     }
-    
+
     @Bean
     public CustomPreAuthenticatedProcessingFilter customPreAuthenticatedProcessingFilter () throws Exception {
         CustomPreAuthenticatedProcessingFilter filter = new CustomPreAuthenticatedProcessingFilter(userService);
         filter.setAuthenticationManager(authenticationManager());
-        
+
         return filter;
     }
 }

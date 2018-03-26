@@ -14,11 +14,13 @@ public class GlobalExceptionHandler {
     // Catch all for now
     @ExceptionHandler(Exception.class)
     ResponseEntity exceptionHandler (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .build();
     }
-    
+
     @ExceptionHandler(AccessDeniedException.class)
     ResponseEntity accessDeniedExceptionHandler (Exception e) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                             .build();
     }
 }

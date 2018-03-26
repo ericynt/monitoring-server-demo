@@ -22,37 +22,38 @@ import static com.eric.monitoringserverjava.utils.JWTTokenUtil.getRoleStrings;
  *
  */
 public class CustomAuthenticationUserDetailsService implements
-        AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken> {
+        AuthenticationUserDetailsService<PreAuthenticatedAuthenticationToken>
+{
     private static final Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationUserDetailsService.class);
-    
+
     private UserService userService;
-    
+
     @Value("${jwt.token.secret}")
     String tokenSecret;
-    
+
     @Autowired
     public CustomAuthenticationUserDetailsService (UserService userService) {
         this.userService = userService;
     }
-    
+
     @Override
     public UserDetails loadUserDetails (PreAuthenticatedAuthenticationToken authentication) throws
             UsernameNotFoundException {
         Object principal = authentication.getPrincipal();
         com.eric.monitoringserverjava.users.User retrievedUser = userService.getUserByName(principal.toString());
-        
+
         if (retrievedUser == null) {
             LOGGER.error("No corresponding user found in db for principal {}.", principal.toString());
-            
+
             throw new UsernameNotFoundException("User not found.");
         }
-        
+
         String[] roleStrings = getRoleStrings(retrievedUser);
         List<GrantedAuthority> grantedAuthorities = new SimpleAttributes2GrantedAuthoritiesMapper()
                 .getGrantedAuthorities(Arrays.asList(roleStrings));
-        
+
         LOGGER.debug("Adding roles {} to user details.", String.join(", ", roleStrings));
-        
+
         return new User(principal.toString(), "", grantedAuthorities);
     }
 }
