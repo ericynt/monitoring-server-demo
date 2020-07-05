@@ -27,6 +27,7 @@ public class CustomPreAuthenticatedProcessingFilter extends AbstractPreAuthentic
 
     private static final String AUTHORIZATION = "Authorization";
 
+    // Don't use this
     @Value("${jwt.token.secret}")
     String tokenSecret;
 
